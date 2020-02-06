@@ -1,6 +1,6 @@
 class App {
   constructor() {
-    this.notes = [];
+    this.notes = JSON.parse(localStorage.getItem('notes')) || [];
     this.title = '';
     this.text = '';
 
@@ -16,6 +16,7 @@ class App {
     this.$modalTitle = document.querySelector('.modal-title');
     this.$modalText = document.querySelector('.modal-text');
     this.$modalCloseBtn = document.querySelector('.modal-close-button');
+    this.displayNotes();
     this.addEventListeners();
   }
 
@@ -121,7 +122,12 @@ class App {
     this.displayNotes();
   }
 
+  saveNotes() {
+    localStorage.setItem('notes', JSON.stringify(this.notes));
+  }
+
   displayNotes() {
+    this.saveNotes();
     this.$placeHolder.style.display = this.notes ? 'none' : 'flex';
     const notes = this.notes.map(note => `
       <div class='note' data-id="${note.id}">
