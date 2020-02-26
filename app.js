@@ -1,6 +1,6 @@
 class App {
   constructor() {
-    this.notes = [];
+    this.notes = JSON.parse(localStorage.getItem('notes')) || [];
     this.title = null;
     this.text = null;
     this.id = null;
@@ -18,7 +18,7 @@ class App {
     this.$modalCloseBtn = document.querySelector('.modal-close-button');
     this.$toolbarDelete = document.querySelector('.toolbar-delete');
     this.addEventListeners();
-    this.displayNotes();
+    this.saveNotes();
   }
 
   addEventListeners() {
@@ -68,6 +68,11 @@ class App {
     }
   }
 
+  saveNotes() {
+    localStorage.setItem('notes', JSON.stringify(this.notes));
+    this.displayNotes();
+  }
+
   closeModal() {
     this.title = this.$modalTitle.value;
     this.text = this.$modalText.value;
@@ -83,7 +88,7 @@ class App {
         return note;
       }
     })
-    this.displayNotes();
+    this.saveNotes()
     this.$modal.classList.remove('open-modal');
   }
 
@@ -121,9 +126,8 @@ class App {
     }
     const noteWithId = {...note, id: newId};
     this.notes = [...this.notes, noteWithId];
+    this.saveNotes();
     this.closeForm();
-    this.displayNotes();
-    console.log(this.notes);
   }
 
   displayNotes() {
@@ -146,10 +150,9 @@ class App {
     event.stopPropagation();
     if (!event.target.matches('.toolbar-delete')) return;
     this.selectNote(event);
-    // const id = event.target.dataset.id;
-    console.log('this.id: ', this.id);
     this.notes = this.notes.filter(note => Number(note.id) !== Number(this.id));
-    this.displayNotes();
+    this.saveNotes();
+    
   }
 }
 
